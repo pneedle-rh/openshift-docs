@@ -1,0 +1,15 @@
+// Module included in the following assemblies:
+//
+// * architecture/admission-controllers.adoc
+
+[id="admission-controller-default_{context}"]
+= Default admission controllers
+
+A set of default admission controllers are enabled in {product-title} {product-version}. These default admission controllers contribute to fundamental control plane functionality, such as ingress admission policy, xref:../nodes/clusters/nodes-cluster-overcommit.adoc#nodes-cluster-resource-override_nodes-cluster-overcommit[cluster resource limit override] and quota policy.
+
+Admission plug-ins are resource specific. As such, resources served by `openshift-apiserver` use a different admission chain.
+
+[NOTE]
+====
+Default admission controller implementation may differ between {product-title} releases.
+====

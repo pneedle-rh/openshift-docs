@@ -28,20 +28,18 @@ Distros: openshift-enterprise,openshift-webscale,openshift-origin,openshift-dedi
 Topics:
 - Name: Welcome
   File: index
-- Name: About OpenShift Kubernetes Engine
-  File: oke_about
+- Name: About OpenShift Container Engine
+  File: oce_about
   Distros: openshift-enterprise,openshift-webscale
 - Name: Legal notice
   File: legal-notice
 ---
-Name: What's new?
+Name: What's New?
 Dir: whats_new
 Distros: openshift-origin
 Topics:
-- Name: New features and enhancements
-  File: new-features
-- Name: Deprecated features
-  File: deprecated-features
+- Name: Overview
+  File: index
 ---
 Name: Getting started
 Dir: getting_started
@@ -49,6 +47,11 @@ Distros: openshift-dedicated
 Topics:
 - Name: Accessing your services
   File: accessing-your-services
+- Name: Cloud Infrastructure Access
+  Dir: cloud_infrastructure_access
+  Topics:
+    - Name: AWS Infrastructure Access
+      File: dedicated-aws-access
 - Name: Scaling your cluster
   File: scaling-your-cluster
 - Name: Deleting your cluster
@@ -56,29 +59,12 @@ Topics:
 - Name: Networking
   File: dedicated-networking
 ---
-Name: Cloud infrastructure access
-Dir: cloud_infrastructure_access
-Distros: openshift-dedicated
-Topics:
-- Name: Understanding cloud infrastructure access
-  File: dedicated-understanding-aws
-- Name: Accessing AWS infrastructure
-  File: dedicated-aws-access
-- Name: Configuring AWS VPC peering
-  File: dedicated-aws-peering
-- Name: Configuring AWS VPN
-  File: dedicated-aws-vpn
-- Name: Configuring AWS Direct Connect
-  File: dedicated-aws-dc
-- Name: Configuring a private cluster
-  File: dedicated-aws-private-cluster
----
 Name: Release notes
 Dir: release_notes
 Distros: openshift-enterprise,openshift-webscale
 Topics:
-- Name: OpenShift Container Platform 4.5 release notes
-  File: ocp-4-5-release-notes
+- Name: OpenShift Container Platform 4.4 release notes
+  File: ocp-4-4-release-notes
 - Name: Versioning policy
   File: versioning-policy
 ---
@@ -89,22 +75,19 @@ Topics:
 - Name: Product architecture
   File: architecture
 - Name: Installation and update
-  Distros: openshift-enterprise,openshift-webscale,openshift-origin
+  Distros: openshift-enterprise,openshift-webscale
   File: architecture-installation
 - Name: The control plane
   File: control-plane
   Distros: openshift-enterprise,openshift-webscale,openshift-origin,openshift-dedicated,openshift-online
 - Name: Understanding OpenShift development
   File: understanding-development
-- Name: Fedora CoreOS
-  File: architecture-rhcos
-  Distros: openshift-origin
 - Name: Red Hat Enterprise Linux CoreOS
   File: architecture-rhcos
-  Distros: openshift-enterprise,openshift-webscale
-- Name: The CI/CD methodology and practice
-  File: cicd_gitops
-  Distros: openshift-enterprise,openshift-webscale
+  Distros: openshift-enterprise,openshift-webscale,openshift-origin
+- Name: Admission controllers
+  File: admission-controllers
+  Distros: openshift-enterprise,openshift-origin
 ---
 Name: Administering a cluster
 Dir: administering_a_cluster
@@ -153,8 +136,6 @@ Topics:
     File: installing-azure-vnet
   - Name: Installing a private cluster on Azure
     File: installing-azure-private
-  - Name: Installing a cluster on Azure using ARM templates
-    File: installing-azure-user-infra
   - Name: Uninstalling a cluster on Azure
     File: uninstalling-cluster-azure
 - Name: Installing on GCP
@@ -178,6 +159,11 @@ Topics:
     File: installing-restricted-networks-gcp
   - Name: Uninstalling a cluster on GCP
     File: uninstalling-cluster-gcp
+- Name: Installing on RHV
+  Dir: installing_rhv
+  Topics:
+  - Name: Installing a cluster on Red Hat Virtualization
+    File: installing-rhv
 - Name: Installing on bare metal
   Dir: installing_bare_metal
   Topics:
@@ -187,24 +173,23 @@ Topics:
     File: installing-bare-metal-network-customizations
   - Name: Restricted network bare metal installation
     File: installing-restricted-networks-bare-metal
-- Name: Deploying IPI bare metal
+- Name: Deploying IPI Bare Metal
   Dir: installing_bare_metal_ipi
   Distros: openshift-webscale
   Topics:
-  - Name: Overview
-    File: ipi-install-overview
+  - Name: Deploying IPI bare metal
+    File: deploying-ipi-bare-metal
   - Name: Prerequisites
     File: ipi-install-prerequisites
   - Name: Setting up the environment for an OpenShift installation
     File: ipi-install-installation-workflow
   - Name: Troubleshooting
     File: ipi-install-troubleshooting
-# - Name: Installing on IBM Z and LinuxONE
-#   Dir: installing_ibm_z
-#   Distros: openshift-enterprise,openshift-webscale
-#   Topics:
-#   - Name: Installing a cluster on IBM Z and LinuxONE
-#     File: installing-ibm-z
+- Name: Installing on IBM Z
+  Dir: installing_ibm_z
+  Topics:
+  - Name: Installing a cluster on IBM Z
+    File: installing-ibm-z
 - Name: Installing on OpenStack
   Dir: installing_openstack
   Topics:
@@ -214,27 +199,10 @@ Topics:
     File: installing-openstack-installer-custom
   - Name: Installing a cluster on OpenStack with Kuryr
     File: installing-openstack-installer-kuryr
-  - Name: Installing a cluster on OpenStack on your own infrastructure
-    File: installing-openstack-user
-  - Name: Installing a cluster on OpenStack with Kuryr on your own infrastructure
-    File: installing-openstack-user-kuryr
   # - Name: Load balancing deployments on OpenStack
   #   File: installing-openstack-load-balancing
   - Name: Uninstalling a cluster on OpenStack
     File: uninstalling-cluster-openstack
-  - Name: Uninstalling a cluster on OpenStack from your own infrastructure
-    File: uninstalling-openstack-user
-- Name: Installing on RHV
-  Dir: installing_rhv
-  Topics:
-  - Name: Creating a custom virtual machine template for RHV
-    File: installing-rhv-creating-custom-vm
-  - Name: Installing a cluster quickly on RHV
-    File: installing-rhv-default
-  - Name: Installing a cluster on RHV with customizations
-    File: installing-rhv-customizations
-  - Name: Uninstalling a cluster on RHV
-    File: uninstalling-cluster-rhv
 - Name: Installing on vSphere
   Dir: installing_vsphere
   Topics:
@@ -244,8 +212,8 @@ Topics:
     File: installing-vsphere-network-customizations
   - Name: Restricted network vSphere installation
     File: installing-restricted-networks-vsphere
-- Name: Troubleshooting installation issues
-  File: installing-troubleshooting
+- Name: Gathering installation logs
+  File: installing-gather-logs
 - Name: Support for FIPS cryptography
   File: installing-fips
   Distros: openshift-enterprise,openshift-webscale,openshift-dedicated,openshift-online
@@ -279,7 +247,6 @@ Topics:
   File: updating-cluster-cli
 - Name: Updating a cluster that includes RHEL compute machines
   File: updating-cluster-rhel-compute
-  Distros: openshift-enterprise,openshift-webscale
 #- Name: Updating a disconnected cluster
 #  File: updating-disconnected-cluster
 # - Name: Troubleshooting an update
@@ -398,8 +365,6 @@ Topics:
   File: using-service-accounts-as-oauth-client
 - Name: Scoping tokens
   File: tokens-scoping
-- Name: Using bound service account tokens
-  File: bound-service-account-tokens
 - Name: Managing Security Context Constraints
   File: managing-security-context-constraints
   Distros: openshift-enterprise,openshift-webscale,openshift-origin
@@ -408,7 +373,7 @@ Topics:
   Distros: openshift-enterprise,openshift-webscale,openshift-origin
 - Name: Syncing LDAP groups
   File: ldap-syncing
-  Distros: openshift-enterprise,openshift-webscale,openshift-origin,openshift-dedicated
+  Distros: openshift-enterprise,openshift-webscale,openshift-origin
 - Name: Allowing JavaScript-based access to the API server from additional hosts
   File: allowing-javascript-access-api-server
   Distros: openshift-enterprise,openshift-webscale,openshift-origin
@@ -435,9 +400,6 @@ Topics:
   Distros: openshift-enterprise,openshift-webscale,openshift-origin
 - Name: Configuring network policy
   File: configuring-networkpolicy
-- Name: Using SCTP
-  File: using-sctp
-  Distros: openshift-enterprise,openshift-webscale,openshift-origin
 - Name: Multiple networks
   Dir: multiple_networks
   Distros: openshift-enterprise,openshift-webscale,openshift-origin
@@ -456,32 +418,14 @@ Topics:
     File: configuring-ipvlan
   - Name: Configuring a host-device network
     File: configuring-host-device
+  - Name: Configuring an SR-IOV network
+    File: configuring-sr-iov
   - Name: Editing an additional network
     File: edit-additional-network
   - Name: Removing an additional network
     File: remove-additional-network
   - Name: Configuring PTP
     File: configuring-ptp
-- Name: Hardware networks
-  Dir: hardware_networks
-  Distros: openshift-enterprise,openshift-webscale,openshift-origin
-  Topics:
-  - Name: About Single Root I/O Virtualization (SR-IOV) hardware networks
-    File: about-sriov
-  - Name: Installing the SR-IOV Operator
-    File: installing-sriov-operator
-  - Name: Configuring the SR-IOV Operator
-    File: configuring-sriov-operator
-  - Name: Configuring an SR-IOV network device
-    File: configuring-sriov-device
-  - Name: Configuring an SR-IOV network attachment
-    File: configuring-sriov-net-attach
-  - Name: Adding Pod to an SR-IOV network
-    File: add-pod
-  - Name: Using high performance multicast
-    File: using-sriov-multicast
-  - Name: Using DPDK and RDMA
-    File: using-dpdk-and-rdma
 - Name: OpenShift SDN network provider
   Dir: openshift_sdn
   Topics:
@@ -570,6 +514,12 @@ Topics:
     File: persistent-storage-azure-file
   - Name: Persistent storage using Cinder
     File: persistent-storage-cinder
+  - Name: Persistent storage using Container Storage Interface (CSI)
+    File: persistent-storage-csi
+  - Name: Persistent storage using CSI volume cloning
+    File: persistent-storage-csi-cloning
+  - Name: Persistent storage using CSI volume snapshots
+    File: persistent-storage-csi-snapshots
   - Name: Persistent storage using Fibre Channel
     File: persistent-storage-fibre
   - Name: Persistent storage using FlexVolume
@@ -590,19 +540,9 @@ Topics:
 #    File: persistent-storage-manila
   - Name: Persistent storage using VMware vSphere
     File: persistent-storage-vsphere
-- Name: Using Container Storage Interface (CSI)
-  Dir: container_storage_interface
-  Distros: openshift-enterprise,openshift-webscale,openshift-origin
-  Topics:
-  - Name: Configuring CSI volumes
-    File: persistent-storage-csi
-  - Name: Using CSI volume snapshots
-    File: persistent-storage-csi-snapshots
-  - Name: Using CSI volume cloning
-    File: persistent-storage-csi-cloning
 - Name: Expanding persistent volumes
   File: expanding-persistent-volumes
-  Distros: openshift-enterprise,openshift-webscale,openshift-origin,openshift-dedicated
+  Distros: openshift-enterprise,openshift-webscale,openshift-origin
 - Name: Dynamic provisioning
   File: dynamic-provisioning
   Distros: openshift-enterprise,openshift-webscale,openshift-origin
@@ -698,8 +638,6 @@ Topics:
     File: osdk-helm
   - Name: Generating a ClusterServiceVersion (CSV)
     File: osdk-generating-csvs
-  - Name: Validating Operators using the scorecard
-    File: osdk-scorecard
   - Name: Configuring built-in monitoring with Prometheus
     File: osdk-monitoring-prometheus
   - Name: Configuring leader election
@@ -764,12 +702,10 @@ Topics:
 #  File: understanding-openshift-pipelines
 #- Name: Installing Pipelines
 #  File: installing-pipelines
-#- Name: Uninstalling Pipelines
-#  File: uninstalling-pipelines
-#- Name: Creating applications with OpenShift Pipelines
-#  File: creating-applications-with-cicd-pipelines
+#- Name: Getting started with OpenShift Pipelines
+#  File: getting-started-with-openshift-pipelines
 #- Name: Working with Pipelines using the Developer perspective
-#  File: working-with-pipelines-using-the-developer-perspective
+#  File: working-with-pipelines-using-developer-perspective
 #---
 Name: Images
 Dir: openshift_images
@@ -816,9 +752,6 @@ Topics:
     File: images-other-jenkins
   - Name: Jenkins agent
     File: images-other-jenkins-agent
-- Name: Building and deploying a DPDK payload using the s2i image
-  File: cnf-building-and-deploying-a-dpdk-payload
-  Distros: openshift-webscale
 ---
 Name: Applications
 Dir: applications
@@ -856,14 +789,22 @@ Topics:
   Dir: service_brokers
   Distros: openshift-enterprise,openshift-webscale,openshift-origin
   Topics:
-  - Name: Installing Service Catalog
+  - Name: Installing the service catalog
     File: installing-service-catalog
-  - Name: Uninstalling Service Catalog
-    File: uninstalling-service-catalog
-  - Name: Installing the Template Service Broker
+  - Name: Installing the Template service Broker
     File: installing-template-service-broker
+  - Name: Provisioning template applications
+    File: provisioning-template-application
   - Name: Uninstalling the Template Service Broker
     File: uninstalling-template-service-broker
+  - Name: Installing the OpenShift Ansible Broker
+    File: installing-ansible-service-broker
+  - Name: Configuring the OpenShift Ansible Broker
+    File: configuring-ansible-service-broker
+  - Name: Provisioning service bundles
+    File: provisioning-service-bundle
+  - Name: Uninstalling the OpenShift Ansible Broker
+    File: uninstalling-ansible-service-broker
 - Name: Deployments
   Dir: deployments
   Topics:
@@ -897,9 +838,6 @@ Topics:
 - Name: Pruning objects to reclaim resources
   File: pruning-objects
   Distros: openshift-origin,openshift-enterprise,openshift-webscale
-- Name: Using the Red Hat Marketplace
-  File: red-hat-marketplace
-  Distros: openshift-origin,openshift-enterprise,openshift-webscale
 ---
 Name: Machine management
 Dir: machine_management
@@ -927,10 +865,8 @@ Topics:
   File: creating-infrastructure-machinesets
 - Name: Adding a RHEL compute machine
   File: adding-rhel-compute
-  Distros: openshift-enterprise,openshift-webscale
 - Name: Adding more RHEL compute machines
   File: more-rhel-compute
-  Distros: openshift-enterprise,openshift-webscale
 - Name: Deploying machine health checks
   File: deploying-machine-health-checks
 ---
@@ -1106,9 +1042,9 @@ Topics:
     File: cluster-logging-collector
   - Name: Using tolerations to control cluster logging pod placement
     File: cluster-logging-tolerations
-  - Name: Forwarding cluster logs using Log Forwarding
+  - Name: Forwarding cluster logs to specific endpoints
     File: cluster-logging-log-forwarding
-  - Name: Fowarding cluster logs using Fluentd plug-ins
+  - Name: Sending logs to external devices using Fluentd plug-ins
     File: cluster-logging-external
   - Name: Configuring systemd-journald for cluster logging
     File: cluster-logging-systemd
@@ -1135,7 +1071,7 @@ Topics:
 ---
 Name: Monitoring
 Dir: monitoring
-Distros: openshift-enterprise,openshift-webscale,openshift-origin
+Distros: openshift-enterprise,openshift-webscale
 Topics:
 - Name: Cluster monitoring
   Dir: cluster_monitoring
@@ -1222,9 +1158,6 @@ Topics:
   File: routing-optimization
 - Name: What huge pages do and how they are consumed by apps
   File: what-huge-pages-do-and-how-they-are-consumed-by-apps
-- Name: Performance-addon operator for low latency nodes
-  File: cnf-performance-addon-operator-for-low-latency-nodes
-  Distros: openshift-webscale
 ---
 Name: Backup and restore
 Dir: backup_and_restore
@@ -1232,8 +1165,8 @@ Distros: openshift-origin,openshift-enterprise,openshift-webscale
 Topics:
 - Name: Backing up etcd data
   File: backing-up-etcd
-- Name: Replacing an unhealthy etcd member
-  File: replacing-unhealthy-etcd-member
+- Name: Replacing a failed master host
+  File: replacing-failed-master
 - Name: Disaster recovery
   Dir: disaster_recovery
   Topics:
@@ -1321,7 +1254,7 @@ Topics:
     File: usage-oc-kubectl
 - Name: OpenShift Do developer CLI (odo)
   Dir: openshift_developer_cli
-  Distros: openshift-enterprise,openshift-webscale,openshift-origin,openshift-dedicated,openshift-online
+  Distros: openshift-enterprise,openshift-webscale,openshift-online,openshift-dedicated,openshift-online
   Topics:
   - Name: Understanding odo
     File: understanding-odo
@@ -1358,20 +1291,18 @@ Topics:
     File: odo-release-notes
 - Name: Helm CLI
   Dir: helm_cli
-  Distros: openshift-enterprise,openshift-webscale,openshift-origin
+  Distros: openshift-enterprise,openshift-webscale
   Topics:
   - Name: Getting started with Helm on OpenShift Container Platform
     File: getting-started-with-helm-on-openshift-container-platform
-#- Name: OpenShift Pipelines CLI (tkn)
+#- Name: tkn CLI
 #  Dir: tkn_cli
 #  Distros: openshift-enterprise,openshift-webscale,openshift-origin
 #  Topics:
 #  - Name: Installing tkn
 #    File: installing-tkn
 #  - Name: Basic tkn commands
-#    File: op-tkn-reference
-- Name: Knative CLI (kn) for use with OpenShift Serverless
-  File: kn-cli-tools
+#    File: basic-tkn-commands
 ---
 Name: OpenShift REST APIs
 Dir: rest_api
@@ -1422,52 +1353,15 @@ Topics:
     File: ossm-tutorial-kiali
   - Name: Distributed tracing tutorial
     File: ossm-tutorial-jaeger-tracing
-  - Name: Automatic route creation
-    File: ossm-auto-route
-- Name: Service mesh user guide
-  Dir: service_mesh_user_guide
-  Topics:
-  - Name: Traffic management
-    File: ossm-traffic-manage
 #  - Name: Grafana tutorial
 #    File: ossm-tutorial-grafana
 #  - Name: Prometheus tutorial
 #    File: ossm-tutorial-prometheus
-- Name: Support
-  Dir: service_mesh_support
-  Topics:
-  - Name: Collecting service mesh data for support
-    File: ossm-collecting-ossm-data
 - Name: 3scale adapter
   Dir: threescale_adapter
   Topics:
   - Name: Using the 3scale Istio adapter
     File: threescale-adapter
-
----
-Name: Jaeger
-Dir: jaeger
-Distros: openshift-enterprise
-Topics:
-- Name: Jaeger Release Notes
-  File: rhbjaeger-release-notes
-- Name: Jaeger Architecture
-  Dir: jaeger_arch
-  Topics:
-  - Name: Jaeger architecture
-    File: rhbjaeger-architecture
-- Name: Jaeger Installation
-  Dir: jaeger_install
-  Topics:
-  - Name: Installing Jaeger
-    File: rhbjaeger-installation
-#  - Name: Deploying Jaeger
-#    File: rhbjaeger-deploying
-  - Name: Upgrading Jaeger
-    File: rhbjaeger-updating
-  - Name: Removing Jaeger
-    File: rhbjaeger-removing
-
 ---
 Name: Container-native virtualization
 Dir: cnv
@@ -1498,7 +1392,7 @@ Topics:
 - Name: Virtual machines
   Dir: cnv_virtual_machines
   Topics:
-###VIRTUAL MACHINE CHESS SALAD (silly name to highlight that the commented out assemblies need to be checked against merged filenams)
+#### VIRTUAL MACHINE CHESS SALAD (silly name to highlight that the commented out assemblies need to be checked against merged filenams)
   - Name: Creating virtual machines
     File: cnv-create-vms
   - Name: Editing virtual machines
@@ -1507,9 +1401,7 @@ Topics:
     File: cnv-edit-boot-order
   - Name: Deleting virtual machines
     File: cnv-delete-vms
-  - Name: Deleting virtual machine instances
-    File: cnv-deleting-vmis
-  - Name: Controlling virtual machine states
+  - Name: Controlling virtual machines states
     File: cnv-controlling-vm-states
   - Name: Accessing virtual machine consoles
     File: cnv-accessing-vm-consoles
@@ -1520,16 +1412,14 @@ Topics:
   - Name: Advanced virtual machine management
     Dir: cnv_advanced_vm_management
     Topics:
-#Advanced virtual machine configuration
+# Advanced virtual machine configuration
     - Name: Automating management tasks
       File: cnv-automating-management-tasks
     - Name: Configuring PXE booting for virtual machines
       File: cnv-configuring-pxe-booting
     - Name: Managing guest memory
       File: cnv-managing-guest-memory
-    - Name: Enabling dedicated resources for a virtual machine
-      File: cnv-dedicated-resources-vm
-#Importing virtual machines
+# Importing virtual machines
   - Name: Importing virtual machines
     Dir: cnv_importing_vms
     Topics:
@@ -1541,7 +1431,7 @@ Topics:
       File: cnv-importing-virtual-machine-images-datavolumes-block
     - Name: Importing a VMware virtual machine or template
       File: cnv-importing-vmware-vm
-#Cloning virtual machines
+# Cloning virtual machines
   - Name: Cloning virtual machines
     Dir: cnv_cloning_vms
     Topics:
@@ -1553,7 +1443,7 @@ Topics:
       File: cnv-cloning-vm-using-datavolumetemplate
     - Name: Cloning a virtual machine disk into a new block storage DataVolume
       File: cnv-cloning-vm-disk-into-new-datavolume-block
-#Virtual machine networking
+# Virtual machine networking
   - Name: Virtual machine networking
     Dir: cnv_vm_networking
     Topics:
@@ -1565,7 +1455,7 @@ Topics:
       File: cnv-installing-qemu-guest-agent
     - Name: Viewing the IP address of NICs on a virtual machine
       File: cnv-viewing-ip-of-vm-nic
-#A BETTER NAME THAN 'STORAGE 4 U'
+# A BETTER NAME THAN 'STORAGE 4 U'
   - Name: Virtual machine disks
     Dir: cnv_virtual_disks
     Topics:
@@ -1575,17 +1465,11 @@ Topics:
       File: cnv-uploading-local-disk-images-virtctl
     - Name: Uploading a local disk image to a block storage DataVolume
       File: cnv-uploading-local-disk-images-block
-    - Name: Moving a local virtual machine disk to a different node
-      File: cnv-moving-local-vm-disk-to-different-node
     - Name: Expanding virtual storage by adding blank disk images
       File: cnv-expanding-virtual-storage-with-blank-disk-images
-    - Name: Storage defaults for DataVolumes
-      File: cnv-storage-defaults-for-datavolumes
     - Name: Preparing CDI scratch space
       File: cnv-preparing-cdi-scratch-space
-    - Name: Deleting DataVolumes
-      File: cnv-deleting-datavolumes
-#Templates
+# Templates
 - Name: Virtual machine templates
   Dir: cnv_vm_templates
   Topics:
@@ -1593,11 +1477,9 @@ Topics:
     File: cnv-creating-vm-template
   - Name: Editing a virtual machine template
     File: cnv-editing-vm-template
-  - Name: Enabling dedicated resources for a virtual machine template
-    File: cnv-dedicated-resources-vm-template
   - Name: Deleting a virtual machine template
     File: cnv-deleting-vm-template
-#Virtual machine live migration
+# Virtual machine live migration
 - Name: Live migration
   Dir: cnv_live_migration
   Topics:
@@ -1613,7 +1495,7 @@ Topics:
     File: cnv-cancel-vmi-migration
   - Name: Configuring virtual machine eviction strategy
     File: cnv-configuring-vmi-eviction-strategy
-#Node maintenance mode
+# Node maintenance mode
 - Name: Node maintenance
   Dir: cnv_node_maintenance
   Topics:
@@ -1625,7 +1507,7 @@ Topics:
     File: cnv-setting-node-maintenance
   - Name: Resuming a node from maintenance mode
     File: cnv-resuming-node
-#Node Networking
+# Node Networking
 - Name: Node networking
   Dir: cnv_node_network
   Topics:
@@ -1633,9 +1515,7 @@ Topics:
     File: cnv-observing-node-network-state
   - Name: Updating node network configuration
     File: cnv-updating-node-network-config
-  - Name: Troubleshooting node network configuration
-    File: cnv-troubleshooting-node-network
-#Logging, events, and monitoring
+# Logging, events, and monitoring
 - Name: Logging, events, and monitoring
   Dir: cnv_logging_events_monitoring
   Topics:
@@ -1654,55 +1534,38 @@ Topics:
   - Name: Collecting container-native virtualization data for Red Hat Support
     File: cnv-collecting-cnv-data
 ---
-# OpenShift Serverless
 Name: Serverless applications
 Dir: serverless
 Distros: openshift-enterprise,openshift-webscale
 Topics:
-# Release notes
 - Name: Release Notes
   File: serverless-release-notes
-# Support
-- Name: Support
-  File: serverless-support
-# Intro / getting started
 - Name: Getting started with OpenShift Serverless
   File: serverless-getting-started
-# Installing OpenShift Serverless
+### Installing OpenShift Serverless
 - Name: Installing OpenShift Serverless
   Dir: installing_serverless
   Topics:
-  - Name: Installing OpenShift Serverless
+  - Name: Installing the OpenShift Serverless Operator
     File: installing-openshift-serverless
-  - Name: Upgrading the OpenShift Serverless Operator
-    File: upgrading-serverless
   - Name: Installing Knative Serving
     File: installing-knative-serving
-  - Name: Installing Knative Eventing
-    File: installing-knative-eventing
+###  - Name: Installing Knative Eventing
+###    File: installing-knative-eventing
   - Name: Installing the Knative CLI
     File: installing-kn
   - Name: Removing OpenShift Serverless
     File: removing-openshift-serverless
-# Apps
-- Name: Creating and managing serverless applications
-  File: serving-creating-managing-apps
-# HA
-- Name: Configuring high-availability components
-  File: serverless-config-HA
-# Knative CLI
-- Name: Knative CLI
-  Dir: knative_cli
-  Topics:
-  - Name: Getting started with Knative CLI
-    File: knative-cli
-# Knative Serving
+### Knative Serving
 - Name: Knative Serving
   Dir: knative_serving
   Topics:
   - Name: How Knative Serving works
     File: serverless-knative-serving
-  ### Knative services
+  - Name: Getting started with Knative services
+    File: getting-started-knative-services
+  - Name: Creating serverless applications
+    File: creating-serverless-applications
   - Name: Interacting with serverless applications
     File: interacting-serverless-apps
   - Name: Configuring Knative Serving autoscaling
@@ -1711,30 +1574,27 @@ Topics:
     File: cluster-logging-serverless
   - Name: Splitting traffic between revisions
     File: splitting-traffic-between-revisions
-# Knative Eventing
-- Name: Knative Eventing
-  Dir: knative_eventing
+### Knative CLI
+- Name: Knative CLI
+  Dir: knative_cli
   Topics:
-  - Name: How Knative Eventing works
-    File: serverless-knative-eventing
-# Event sources
-  - Name: Using the kn CLI to list event sources and event source types
-    File: serverless-kn-source
-  - Name: Using ApiServerSource
-    File: serverless-apiserversource
-  - Name: Using PingSource
-    File: serverless-pingsource
-  - Name: Using SinkBinding
-    File: serverless-sinkbinding
-# Triggers
-  - Name: Using triggers
-    File: serverless-kn-trigger
-# Brokers
-  - Name: Using the broker
-    File: serverless-using-brokers
-# Channels
-  - Name: Using channels
-    File: serverless-channels
-# Metering
+  - Name: Getting started with Knative CLI
+    File: knative-cli
+### Knative Eventing
+### - Name: Knative Eventing
+###  Dir: knative_eventing
+###  Topics:
+###  - Name: How Knative Eventing works
+###    File: serverless-knative-eventing
+###  - Name: Using Knative Eventing sources
+###    File: serverless-kn-source
+###  - Name: Using triggers with Knative Eventing
+###    File: serverless-kn-trigger
+###  - Name: Using the broker
+###    File: serverless-using-brokers
+### Monitoring
+- Name: Monitoring OpenShift Serverless components
+  File: monitoring-serverless
+### Metering
 - Name: Using metering with OpenShift Serverless
   File: serverless-metering

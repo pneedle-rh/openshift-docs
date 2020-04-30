@@ -1,0 +1,17 @@
+[id="admission-controllers"]
+= Admission controllers
+include::modules/common-attributes.adoc[]
+:context: admission-controllers
+toc::[]
+
+// Concept modules
+include::modules/admission-controller-overview.adoc[leveloffset=+1]
+
+include::modules/admission-controller-default.adoc[leveloffset=+1]
+
+include::modules/admission-webhook-overview.adoc[leveloffset=+1]
+
+include::modules/admission-webhook-types.adoc[leveloffset=+1]
+
+// Procedure module
+include::modules/admission-webhook-create.adoc[leveloffset=+1]

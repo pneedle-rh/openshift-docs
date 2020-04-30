@@ -1,0 +1,414 @@
+// Module included in the following assemblies:
+//
+// * architecture/admission-controllers.adoc
+
+[id="admission-webhook-create_{context}"]
+= Create an admission webhook
+
+The steps below illustrate how to build a secure and portable webhook admission server.
+
+In this example, the webhook server is also an aggregated API server. This allows other OpenShift components to communicate with the webhook using internal credentials and facilitates testing using the `oc` command. Deploying an aggregated API server in this way also enables role based access control into the webhook, as well as preventing token information from other API servers being disclosed to the webhook. The API server will call `kube-apiserver` with its fully authenticated service account. The aggregated API server then calls to the webhook using the request header certificate. The webhook verifies incoming client certificates through the published request header aggregation CA.
+
+. Create a local CA key and certificate, plus a webhook server key and certificate which are signed by the local CA (replace `<variables>` accordingly):
++
+----
+mkdir _output/tmp/certs
+----
++
+----
+openssl req -x509 -sha256 -new -nodes -days 365 -newkey rsa:2048 -keyout "_output/tmp/certs/serving-ca.key" -out "_output/tmp/certs/serving-ca.crt" -subj "/C=<country>/ST=<state>/L=<city>/O=<company_name>/OU=<organizational_unit>/CN=ca/emailAddress=<email_address>/"
+----
++
+----
+echo '{"signing":{"default":{"expiry":"43800h","usages":["signing","key encipherment","server auth"]}}}' > "_output/tmp/certs/serving-ca-config.json"
+----
+
+. Create a server key and certificate for the webhook:
++
+----
+cd _output/tmp/certs
+----
++
+----
+echo '{"CN":"server.openshift-namespace-reservation.svc","hosts":[server.openshift-namespace-reservation.svc],"key":{"algo":"rsa","size":2048}}' | cfssl gencert -ca=${ca}.crt -ca-key=serving-ca.key -config=serving-ca-config.json - | cfssljson -bare serving-server.openshift-namespace-reservation.svc
+----
++
+----
+mv "serving-server.openshift-namespace-reservation.svc-key.pem" "serving-server.openshift-namespace-reservation.svc.key"
+----
++
+----
+mv "serving-server.openshift-namespace-reservation.svc.pem" "serving-server.openshift-namespace-reservation.svc.crt"
+----
++
+----
+rm -f "serving-server.openshift-namespace-reservation.svc.csr"
+----
+
+. Make sure the OpenShift configuration context is set accordingly.
++
+----
+oc config current-context
+----
++
+If it is not, then set it from one listed output by:
++
+----
+oc config get-contexts
+----
++
+----
+oc config set-context <context> --user=<cluster_admin>
+----
+
+. Create a YAML configuration file specifying RBAC rules for the aggregated API service:
++
+----
+mkdir yaml_files
+----
++
+----
+vi yaml_files/rbac-list.yaml
+----
++
+The YAML file looks as follows:
++
+[source,yaml]
+----
+apiVersion: v1
+kind: List
+items:
+
+- apiVersion: rbac.authorization.k8s.io/v1  <1>
+  kind: ClusterRoleBinding
+  metadata:
+    name: auth-delegator-openshift-namespace-reservation
+  roleRef:
+    kind: ClusterRole
+    apiGroup: rbac.authorization.k8s.io
+    name: system:auth-delegator
+  subjects:
+  - kind: ServiceAccount
+    namespace: openshift-namespace-reservation
+    name: server
+
+- apiVersion: rbac.authorization.k8s.io/v1  <2>
+  kind: ClusterRole
+  metadata:
+    annotations:
+    name: system:openshift:online:namespace-reservation-server
+  rules:
+  - apiGroups:
+    - online.openshift.io
+    resources:
+    - namespacereservations
+    verbs:
+    - get
+    - list
+    - watch
+
+- apiVersion: rbac.authorization.k8s.io/v1  <3>
+  kind: ClusterRole
+  metadata:
+    name: system:openshift:online:namespace-reservation-requester
+  rules:
+  - apiGroups:
+    - admission.online.openshift.io
+    resources:
+    - namespacereservations
+    verbs:
+    - create
+
+- apiVersion: rbac.authorization.k8s.io/v1  <4>
+  kind: ClusterRoleBinding
+  metadata:
+    name: namespace-reservation-server-openshift-namespace-reservation
+  roleRef:
+    kind: ClusterRole
+    apiGroup: rbac.authorization.k8s.io
+    name: system:openshift:online:namespace-reservation-server
+  subjects:
+  - kind: ServiceAccount
+    namespace: openshift-namespace-reservation
+    name: server
+
+- apiVersion: rbac.authorization.k8s.io/v1  <5>
+  kind: RoleBinding
+  metadata:
+    namespace: kube-system
+    name: extension-server-authentication-reader-openshift-namespace-reservation
+  roleRef:
+    kind: Role
+    apiGroup: rbac.authorization.k8s.io
+    name: extension-apiserver-authentication-reader
+  subjects:
+  - kind: ServiceAccount
+    namespace: openshift-namespace-reservation
+    name: server
+
+- apiVersion: rbac.authorization.k8s.io/v1  <6>
+  kind: ClusterRole
+  metadata:
+    name: should-be-default-for-aggregated-apiserver
+  rules:
+  - apiGroups:
+    - admissionregistration.k8s.io
+    resources:
+    - validatingwebhookconfigurations
+    - mutatingwebhookconfigurations
+    verbs:
+    - get
+    - list
+    - watch
+  - apiGroups:
+    - ""
+    resources:
+    - namespaces
+    verbs:
+    - get
+    - list
+    - watch
+
+- apiVersion: rbac.authorization.k8s.io/v1
+  kind: ClusterRoleBinding
+  metadata:
+    name: should-be-default-for-aggregated-apiserver
+  roleRef:
+    kind: ClusterRole
+    apiGroup: rbac.authorization.k8s.io
+    name: should-be-default-for-aggregated-apiserver
+  subjects:
+  - kind: ServiceAccount
+    namespace: openshift-namespace-reservation
+    name: server
+----
+<1> Delegates authentication and authorization to the webhook server API.
+<2> To allow the admission webhook server to access namespace reservations.
+<3> Enables the aggregated API server to create admission reviews.
+<4> Also enables the admission server to access namespace reservations.
+<5> Role binding to read the configuration for terminating authentication.
+<6> Default cluster role and cluster role bindings for an aggregated API server.
+
+. Apply the RBAC rules to the cluster:
++
+----
+oc auth reconcile -f yaml_files/rbac-list.yaml
+----
+
+. Create a new project within which we will run the DaemonSet:
++
+----
+oc create ns openshift-namespace-reservation
+----
+
+. Define a YAML configuration file which will be used to deploy the webhook as a DaemonSet server in a project and restrict it to master nodes only:
++
+----
+vi yaml_files/apiserver-list.yaml
+----
++
+[source,yaml]
+----
+apiVersion: v1
+kind: List
+items:
+
+- apiVersion: apps/v1  <1>
+  kind: DaemonSet
+  metadata:
+    namespace: openshift-namespace-reservation
+    name: server
+    labels:
+      server: "true"
+  spec:
+    selector:
+      matchLabels:
+        server: "true"
+    template:
+      metadata:
+        name: server
+        labels:
+          server: "true"
+      spec:
+        serviceAccountName: server
+        containers:
+        - name: c
+          image: pneedle76/namespace-reservation-server:latest
+          imagePullPolicy: IfNotPresent
+          command:
+          - "/usr/bin/namespace-reservation-server"
+          - "--secure-port=8443"
+          - "--audit-log-path=-"
+          - "--tls-cert-file=/var/serving-cert/tls.crt"
+          - "--tls-private-key-file=/var/serving-cert/tls.key"
+          - "--v=8"
+          ports:
+          - containerPort: 8443
+          volumeMounts:
+          - mountPath: /var/serving-cert
+            name: serving-cert
+          readinessProbe:
+            httpGet:
+              path: /healthz
+              port: 8443
+              scheme: HTTPS
+        volumes:
+        - name: serving-cert
+          secret:
+            defaultMode: 420
+            secretName: server-serving-cert
+
+- apiVersion: v1  <2>
+  kind: Secret
+  metadata:
+    namespace: openshift-namespace-reservation
+    name: server-serving-cert
+  type: kubernetes.io/tls
+  data:
+    tls.crt: TLS_SERVING_CERT
+    tls.key: TLS_SERVING_KEY
+
+- apiVersion: v1  <3>
+  kind: ServiceAccount
+  metadata:
+    namespace: openshift-namespace-reservation
+    name: server
+
+- apiVersion: v1  <4>
+  kind: Service
+  metadata:
+    namespace: openshift-namespace-reservation
+    name: server
+    annotations:
+      service.alpha.openshift.io/serving-cert-secret-name: server-serving-cert
+  spec:
+    selector:
+      server: "true"
+    ports:
+    - port: 443
+      targetPort: 8443
+
+- apiVersion: apiextensions.k8s.io/v1beta1  <5>
+  kind: CustomResourceDefinition
+  metadata:
+    name: namespacereservations.online.openshift.io  <6>
+  spec:
+    group: online.openshift.io  <7>
+    version: v1alpha1  <8>
+    scope: Cluster  <9>
+    names:
+      plural: namespacereservations  <10>
+      singular: namespacereservation  <11>
+      kind: NamespaceReservation  <12>
+
+- apiVersion: apiregistration.k8s.io/v1beta1  <13>
+  kind: APIService
+  metadata:
+    name: v1beta1.admission.online.openshift.io
+  spec:
+    caBundle: SERVICE_SERVING_CERT_CA
+    group: admission.online.openshift.io
+    groupPriorityMinimum: 1000
+    versionPriority: 15
+    service:
+      name: server
+      namespace: openshift-namespace-reservation
+    version: v1beta1
+
+- apiVersion: admissionregistration.k8s.io/v1beta1  <14>
+  kind: ValidatingWebhookConfiguration
+  metadata:
+    name: namespacereservations.admission.online.openshift.io
+  webhooks:
+  - name: namespacereservations.admission.online.openshift.io
+    clientConfig:
+      service:
+        # reach the webhook via the registered aggregated API
+        namespace: default
+        name: kubernetes
+        path: /apis/admission.online.openshift.io/v1beta1/namespacereservations
+      caBundle: KUBE_CA
+    rules:
+    - operations:
+      - CREATE
+      apiGroups:
+      - project.openshift.io
+      apiVersions:
+      - "*"
+      resources:
+      - projectrequests
+    - operations:
+      - CREATE
+      apiGroups:
+      - ""
+      apiVersions:
+      - "*"
+      resources:
+      - namespaces
+    failurePolicy: Fail
+----
+<1> DaemonSet definition for the webhook server.
+<2> Secret for the service serving cert signer.
+<3> Service account declaration.
+<4> Expose the webhook server within the cluster.
+<5> A custom resource definition for the webhook server.
+<6> `<plural>.<group>` format and reflects custom resource definition` `spec` values.
+<7> REST API group name.
+<8> REST API version name.
+<9> Accepted values are `Namespaced` or `Cluster`.
+<10> Plural name to be included in URL.
+<11> Alias seen in `oc` output.
+<12> Camel case reference for resource manifests.
+<13> Configure the admission webhook server also as an aggregated API server.
+<14> Create a validating webhook which which intercepts requests to create namespaces.
+
+. Attribute values to the variables referenced in the above YAML file:
++
+----
+KUBE_CA=$(oc config view --minify=true --flatten -o jsonpath='{range .clusters[*]} {.cluster.certificate-authority-data}')
+----
++
+----
+CERT_DIR=_output/tmp/certs/
+----
+
+. From the same terminal window (i.e. where those variables were defined), deploy the webhook admission server while applying TLS service serving certificate and CA details dynamically:
++
+----
+cat yaml_files/apiserver-list.yaml | \
+    sed "s/TLS_SERVING_CERT/$(base64 ${CERT_DIR}/serving-server.openshift-namespace-reservation.svc.crt | tr -d '\n')/g" | \
+    sed "s/TLS_SERVING_KEY/$(base64 ${CERT_DIR}/serving-server.openshift-namespace-reservation.svc.key | tr -d '\n')/g" | \
+    sed "s/SERVICE_SERVING_CERT_CA/$(base64 ${CERT_DIR}/serving-ca.crt | tr -d '\n')/g" | \
+    sed "s/KUBE_CA/${KUBE_CA}/g" | \
+    oc apply -f -
+----
+
+. Test the admission webhook's functionality:
+.. Reserve a namespace (in this exampled called `reserved-namespace`):
++
+----
+vi yaml_files/reserved_namespace.yaml
+----
++
+----
+apiVersion: online.openshift.io/v1alpha1
+kind: NamespaceReservation
+metadata:
+  name: reserved-namespace
+----
++
+----
+oc create -f yaml_files/reserved_namespace.yaml
+----
++
+.. Try to create a new namespace with the same name:
++
+----
+oc create namespace reserved-namespace
+----
++
+This should return the following error, indicating that the reserved namespace is unavailable:
++
+----
+Error from server (Forbidden): admission webhook "namespacereservations.admission.online.openshift.io" denied the request: "reserved-namespace" is reserved
+----

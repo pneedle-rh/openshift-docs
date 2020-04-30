@@ -1,0 +1,45 @@
+// Module included in the following assemblies:
+//
+// * architecture/admission-controllers.adoc
+
+[id="admission-webhook-overview_{context}"]
+= Admission webhooks
+
+In addition to {product-title} default admission controller plug-ins, admission webhooks enable you to introduce admission plug-ins invoked from webhook servers over HTTP at defined endpoints.
+
+There are two types of configurable admission webhooks in {product-title}:
+
+* During the admission process, a mutating admission controller can invoke xref:modules/admission-webhook-types.adoc#mutating-admission-webhooks[mutating admission webhooks] to perform tasks, such as injecting affinity labels.
+
+* At the end of the admissions process, a validating admission controller can invoke xref:modules/admission-webhook-types.adoc#validating-admission-webhooks[validating admission webhooks] to make sure an object is configured properly, such as validating affinity labels. If the validation passes, {product-title} schedules the object as configured.
+
+When an API request comes in, a mutating or validating admission controller uses the list of external webhooks in the configuration and calls them in parallel:
+
+* If all of the webhooks approve the request, the admission chain continues.
+
+* If any of the webhooks deny the request, the admission request is denied and the reason for doing so is based on the first webhook denial reason.
+
+* If more than one webhook denies the admission request, only the first will be returned to the user.
+
+* If there is an error encountered when calling a webhook, that request is either denied or the webhook is ignored.
+
+The communication between the admission controller and the webhook server needs to be secured using TLS. Generate a CA certificate and use the certificate to sign the server certificate used by your webhook server. The PEM-formatted CA certificate is supplied to the admission controller using a mechanism, such as xref:../authentication/certificates/service-serving-certificate.adoc#service-serving-certificate[Service Serving Certificate Secrets]. The xref:admission-webhook-create_admission-controllers[webhook creation procedure] later in this document includes steps to achieve this.
+
+The following diagram illustrates the sequential admission chain process within which multiple webhook servers are called.
+
+.API admission chain with mutating and validating webhooks
+image::api-admission-chain.png["API admission stage", align="center"]
+
+A simple example use case for admission webhooks is syntactical validation of resources. For example, in an infrastructure where all pods must have a common set of labels, a webhook could inject labels and another webhook could verify that labels are as expected. {product-title} would subsequently schedule pods which include required labels and reject those which do not.
+
+Some common admission webhook use-cases include:
+
+* Namespace reservation xref:admission-webhook-create_admission-controllers[as included in the procedural example later in this document].
+* xref:../networking/hardware_networks/configuring-sriov-operator.adoc#configuring-sriov-operator[Limiting custom network resources managed by the SR-IOV network device plug-in].
+* xref:../nodes/scheduling/nodes-scheduler-taints-tolerations.adoc#nodes-scheduler-taints-tolerations_dedicating_nodes-scheduler-taints-tolerations[Define tolerations which enable taints to qualify which pods should be scheduled on a node].
+* xref:../nodes/pods/nodes-pods-priority.adoc#admin-guide-priority-preemption-names_nodes-pods-priority[Pod priority class validation].
+
+[NOTE]
+====
+The `projectrequestlimits` admission webhook, which enables administrators to set a limit to how many projects can be created per user account, is not currently supported within {product-title} {product-version}, pending further development.
+====

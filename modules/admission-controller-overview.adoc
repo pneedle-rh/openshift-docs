@@ -1,0 +1,19 @@
+// Module included in the following assemblies:
+//
+// * architecture/admission-controllers.adoc
+
+[id="admission-controller-overview_{context}"]
+= Overview
+
+Admission controllers are used to help regulate how {product-title} {product-version} functions.  Admission control plug-ins intercept requests to the master API to validate resource requests and ensure policies are adhered to. For example, admission control plug-ins are commonly used to enforce security policy, resource limitations or configuration requirements.
+
+Admission control plug-ins run in an admission chain, starting with mutating controllers which can modify resources, followed by validating controllers. Some controllers can both modify and validate. If any controller in the sequence rejects a request, the whole chain is aborted and an error is returned. Mutating controllers run prior to validating controllers so that modifications which they trigger can also be validated.
+
+{product-title} has a default set of plug-ins enabled for each resource type. These are required for proper functioning of master nodes. In addition, administrators can define custom admission webhooks to call webhook servers that enforce bespoke policies outside of these defaults.
+
+Some mutating admission controllers can produce side-effects on resources related to the target object. In such situations, steps must be introduced to validate whether the resultant end state is as expected.
+
+[WARNING]
+====
+Custom admission control webhooks should be implemented cautiously because they impact cluster control plane operations. When implementing admission control webhooks in {product-title} {product-version}, ensure you have read the documentation fully, tested for side-effects of mutating webhooks and implemented reclamation and reconciliation steps where appropriate.
+====

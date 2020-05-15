@@ -1741,3 +1741,153 @@ Topics:
 # Metering
 - Name: Using metering with OpenShift Serverless
   File: serverless-metering
+---
+# OpenShift troubleshooting
+Name: Troubleshooting
+Dir: troubleshooting
+Distros: openshift-enterprise,openshift-webscale,openshift-origin,openshift-dedicated,openshift-online
+Topics:
+# General troubleshooting
+- Name: General troubleshooting
+  Dir: troubleshooting-general
+  Topics:
+  - Name: About OpenShift troubleshooting
+  - File: troubleshooting-about
+#  - Name: Troubleshooting methodology
+#    File: troubleshooting-methodology
+#  - Name: Red Hat Insights
+#  - File: troubleshooting-with-redhat-insights
+#  - Name: Support policies and matrices
+#  - File: troubleshooting-support-policies-matrices
+#  - Name: Gathering data
+#  - File: troubleshooting-gathering-data
+#- Name: Installation
+#  Dir: troubleshooting-installation
+#  Topics:
+#    - Name: Installer Provisioned Infrastructure
+#    - File: troubleshooting-ipi-installation
+#    - Name: User Provisioned Infrastructure
+#    - File: troubleshooting-upi-installation
+#    - Name: Installation logs
+#    - File: troubleshooting-installation-logs
+# Troubleshooting API and server authentication
+#- Name: API server and authentication
+#  File: troubleshooting-api-authentication
+# Troubleshooting Storage
+#- Name: Storage
+#  File: troubleshooting-storage
+# Troubleshooting networking
+#- Name: Networking
+#  Dir: troubleshooting-networking
+#  Topics:
+#    - Name: Domain Name Service
+#    - File: troubleshooting-dns
+#    - Name: OpenShift Software Defined Network
+#    - File: troubleshooting-sdn
+#    - Name: Cluster Network Operator
+#    - File: troubleshooting-cno
+# Troubleshooting service mesh
+#- Name: Service mesh
+#  File: troubleshooting-service-mesh
+# Troubleshooting Hive
+#- Name: Hive
+#  File: troubleshooting-hive
+# Troubleshooting registry and images
+#- Name: Registry and images
+#  Dir: troubleshooting-registry-images
+#  Topics:
+#    - Name: Image Registry Operator
+#    - File: troubleshooting-iro
+#    - Name: registry.redhat.io
+#    - File: troubleshooting-registry-redhat-io
+#    - Name: quay.io
+#    - File: troubleshooting-quay-io
+# Troubleshooting etcd.
+#- Name: etcd
+#  File: troubleshooting-etcd
+# Troubleshooting Operators, SDK and service brokers
+#- Name: Operators, SDK and service brokers
+#  File: troubleshooting-operators-sdk-brokers
+# Troubleshooting accessing OpenShift resources
+#- Name: Accessing OpenShift resources
+#  File: troubleshooting-resources
+# Troubleshooting nodes and pods
+#- Name: Nodes and pods
+#  Dir: troubleshooting-nodes-pods
+#  Topics:
+#    - Name: CoreOS
+#    - File: troubleshooting-core-os
+#    - Name: Node Problem Detector
+#    - File: troubleshooting-node-problem-detector
+#    - Name: Pod scheduling
+#    - File: troubleshooting-pod-scheduling
+#    - Name: Windows containers
+#    - File: troubleshooting-windows-containers
+# Troubleshooting builds and applications
+#- Name: Builds and applications
+#  Dir: troubleshooting-builds-applications
+#  Topics:
+#    - Name: Builds
+#    - File: troubleshooting-builds
+#    - Name: Application introspection
+#    - File: troubleshooting-application-introspection
+#    - Name: Application endpoints
+#    - File: troubleshooting-application-endpoints
+# Troubleshooting serverless applications
+#- Name: Serverless applications
+#  File: troubleshooting-serverless
+# Troubleshooting security and compliance
+#- Name: Security and compliance
+#  Dir: troubleshooting-security
+#  Topics:
+#    - Name: Federation
+#    - File: troubleshooting-federation
+# Troubleshooting Container Native Virtualization
+#- Name: Container Native Virtualization
+#  File: troubleshooting-cnv
+# Troubleshooting administration interfaces
+#- Name: Administration interfaces
+#  Dir: troubleshooting-admin-interfaces
+#  Topic:
+#    - Name: CLI tools
+#    - File: troubleshooting-cli-tools
+#    - Name: OpenShift web console
+#    - File: troubleshooting-web-console
+# Troubleshooting monitoring
+#- Name: Monitoring
+#  Dir: troubleshooting-monitoring
+#  Topics:
+#    - Name: Monitoring
+#    - File: troubleshooting-monitoring
+#    - Name: Metering
+#    - File: troubleshooting-metering
+#    - Name: Aggregated logging
+#    - File: troubleshooting-aggregated-logging
+# Troubleshooting Jaeger
+#- Name: Jaeger
+#  File: troubleshooting-jaeger
+# Troubleshooting backup and restore
+#- Name: Backup and restore
+#  File: troubleshooting-backup-restore
+# Troubleshooting performance and scaling
+#- Name: Performance and scaling
+#  File: troubleshooting-performance-scaling
+# Troubleshooting upgrading and updating
+#- Name: Upgrading and updating
+#  File: troubleshooting-upgrading-updating
+# Troubleshooting OpenShift services (AWS, ARO, OSP)
+#- Name: Services
+#  Dir: troubleshooting-services
+#  Topics:
+#    - Name: OpenShift Online
+#    - File: troubleshooting-openshift-online
+#    - Name: OpenShift Dedicated
+#    - File: troubleshooting-openshift-dedicated
+#    - Name: OpenShift Cluster Manager
+#    - File: troubleshooting-ocm
+#    - Name: AWS OpenShift Container Platform
+#    - File: troubleshooting-aws-ocp
+#    - Name: Azure Red Hat OpenShift
+#    - File: troubleshooting-aro
+#    - Name: OpenShift on OpenStack
+#    - File: troubleshooting-ocp-osp

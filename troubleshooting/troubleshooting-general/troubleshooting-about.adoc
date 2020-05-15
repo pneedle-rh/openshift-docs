@@ -1,0 +1,7 @@
+[id="troubleshooting-about"]
+= About {product-title} troubleshooting
+include::modules/common-attributes.adoc[]
+:context: troubleshooting
+toc::[]
+
+//include::modules/troubleshooting-.adoc[leveloffset=+1]
